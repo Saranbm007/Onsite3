@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NittStudentInfo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    <ul>
+        {% for message in messages  %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
+    <h1>Student CRUD</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {% if form.search %}
+        <p>
+            {{ form.search.label }}:
+            {{ form.search(size=32) }}
+            {{ form.submit() }} <br>
+            {% for error in form.search.errors %}
+                 <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+         </p>
+         <p></p>
+         <a href="{{url_for('add')}}">Add Student</a>
+        {% endif %}
+         
+         {% if form.name %}
+         <p>
+            {{ form.name.label }}:
+            {{ form.name(size=32) }} <br>
+            {% for error in form.name.errors %}
+                 <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+         </p> 
+         <p>
+             {{ form.roll_no.label }}:
+             {{ form.roll_no(size=32) }} <br>
+             {% for error in form.roll_no.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+             {% endfor %}
+          </p>
+            <p>{{ form.submit() }}</p>
+         {% endif %}
+         
+    </form>
+        {% if stud %}
+        <div class="studDetail">
+            <p>Name: {{ stud.name }}</p>
+            <p>Roll No: {{ stud.roll_no }}</p>
+            {% if stud_dept %}
+            <p>Department: {{ stud_dept }}</p>
+            <a href="{{ url_for('update', stud_id = stud.id) }}">Update</a>
+            <a href="{{ url_for('remove', stud_id = stud.id) }}">Remove</a>
+            {% endif %}    
+        </div>
+        {% endif %}
+        
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+            $(function() {
+    $.ajax({
+        url: '{{ url_for("searchList") }}'
+        }).done(function (data){
+            $('#searchlist').autocomplete({
+                source: data,
+                minLength: 1
+            });
+        });
+    });
+        </script>
+</body>
+</html>
